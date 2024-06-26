@@ -1,4 +1,5 @@
 from PIL import Image
+from ColorFormats import rgb_to_hsv, hsv_to_rgb
 import os
 
 def create_single_color_image(color, size=(150, 150), filename='single_color_image.png'):
@@ -69,7 +70,7 @@ def add_shade(color, factor):
     b = int(b * (1 - factor))
     return (r, g, b)
 
-def generate_monochrome_scheme(color, num_tints=20, num_shades=20):
+def generate_monochrome_scheme(color, num_tints=50, num_shades=50):
     """
     Generate a monochrome color scheme with tints and shades.
     :param color: Tuple of (R, G, B) values.
@@ -86,14 +87,14 @@ def generate_monochrome_scheme(color, num_tints=20, num_shades=20):
 
 # Example usage:
 # original_color = (100, 150, 200)  # Example RGB color
-# original_color = (255,0,0)
+# # original_color = (255,0,0)
 # monochrome_scheme = generate_monochrome_scheme(original_color)
 # counter = 1
 # for color in monochrome_scheme:
 #     print(color)
-    # folder = 'monochrome'
-    # create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
-    # counter+=1
+#     folder = 'monochrome'
+#     create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+#     counter+=1
 
 #NOTE this complementary is for the rgb model, which means these are complementary colors 
 # Red and Cyan
@@ -116,10 +117,20 @@ def find_complementary_color(rgb_color):
     return complementary_color
 
 # Example usage:
-# rgb_color = (255,0,0)  # Example RGB color
-# complementary_color = find_complementary_color(rgb_color)
+rgb_color = (255,0,0)  # Example RGB color
+complementary_color = find_complementary_color(rgb_color)
 # print("Original RGB color:", rgb_color)
 # print("Complementary RGB color:", complementary_color)
+complementary_colors_list = generate_monochrome_scheme(rgb_color)
+complementary_colors_list.extend(generate_monochrome_scheme(complementary_color))
+counter = 1
+for color in complementary_colors_list:
+    print(color)
+    folder = 'complementary'
+    create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+    counter+=1
+
+
 
 def find_analogous_colors(rgb_color, num_colors=3, angle=30):
     """
@@ -139,69 +150,19 @@ def find_analogous_colors(rgb_color, num_colors=3, angle=30):
         analogous_colors.append((new_r, new_g, new_b))
     return analogous_colors
 
-def rgb_to_hsv(r, g, b):
-    """
-    Convert RGB to HSV (Hue, Saturation, Value/Brightness).
-    :param r: Red value (0-255).
-    :param g: Green value (0-255).
-    :param b: Blue value (0-255).
-    :return: Tuple of (H, S, V) where H is in range [0, 360], S and V are in range [0, 1].
-    """
-    max_rgb = max(r, g, b)
-    min_rgb = min(r, g, b)
-    delta = max_rgb - min_rgb
+sample_color = (255,0,0)
+alist = find_analogous_colors(sample_color)
+analogous_colors = []
+for items in alist:
+    analogous_colors.extend(generate_monochrome_scheme(items, num_shades=10,num_tints=10))
+counter = 1
+for color in analogous_colors:
+    print(color)
+    folder = 'analogous'
+    create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+    counter+=1
 
-    v = max_rgb / 255.0
 
-    if max_rgb != 0:
-        s = delta / max_rgb
-    else:
-        s = 0
-
-    if delta == 0:
-        h = 0
-    elif r == max_rgb:
-        h = (g - b) / delta
-    elif g == max_rgb:
-        h = 2 + (b - r) / delta
-    else:
-        h = 4 + (r - g) / delta
-
-    h *= 60
-    if h < 0:
-        h += 360
-
-    return h, s, v
-
-def hsv_to_rgb(h, s, v):
-    """
-    Convert HSV (Hue, Saturation, Value/Brightness) to RGB.
-    :param h: Hue value in degrees (0-360).
-    :param s: Saturation value (0-1).
-    :param v: Value/Brightness value (0-1).
-    :return: Tuple of (R, G, B) where each value is in range [0, 255].
-    """
-    h /= 60
-    i = int(h)
-    f = h - i
-    p = v * (1 - s)
-    q = v * (1 - s * f)
-    t = v * (1 - s * (1 - f))
-
-    if i == 0:
-        r, g, b = v, t, p
-    elif i == 1:
-        r, g, b = q, v, p
-    elif i == 2:
-        r, g, b = p, v, t
-    elif i == 3:
-        r, g, b = p, q, v
-    elif i == 4:
-        r, g, b = t, p, v
-    else:
-        r, g, b = v, p, q
-
-    return int(r * 255), int(g * 255), int(b * 255)
 
 # Example usage:
 # rgb_color = (100, 150, 200)  # Example RGB color
@@ -235,10 +196,19 @@ def find_triadic_colors(rgb_color):
 # RGB to HSV and HSV to RGB functions as defined in the previous function
 
 # Example usage:
-# rgb_color = (100, 150, 200)  # Example RGB color
-# triadic_colors = find_triadic_colors(rgb_color)
+rgb_color = (100, 150, 200)  # Example RGB color
+triadic_colors = find_triadic_colors(rgb_color)
 # print("Original RGB color:", rgb_color)
 # print("Triadic RGB colors:", triadic_colors)
+triadic_list = []
+for items in triadic_colors:
+    triadic_list.extend(generate_monochrome_scheme(items, num_shades=10,num_tints=10))
+counter = 1
+for color in triadic_list:
+    print(color)
+    folder = 'triadic'
+    create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+    counter+=1
 
 def is_warm_color(rgb_color):
     """

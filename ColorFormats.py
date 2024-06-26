@@ -47,14 +47,68 @@ def rgb_to_cymk(r,g,b):
     yellow = (white - (b/255))/white
     black = 1 - white
 
+def rgb_to_hsv(r, g, b):
+    """
+    Convert RGB to HSV (Hue, Saturation, Value/Brightness).
+    :param r: Red value (0-255).
+    :param g: Green value (0-255).
+    :param b: Blue value (0-255).
+    :return: Tuple of (H, S, V) where H is in range [0, 360], S and V are in range [0, 1].
+    """
+    max_rgb = max(r, g, b)
+    min_rgb = min(r, g, b)
+    delta = max_rgb - min_rgb
 
-def complementary_rgb_255(r, g, b):
-    cr = 255 - r
-    cg = 255 - g
-    cb = 255 - b
-    print(cr,cg,cb)
-    return cr, cg, cb
+    v = max_rgb / 255.0
 
-complementary_rgb_255(255,192,203)
+    if max_rgb != 0:
+        s = delta / max_rgb
+    else:
+        s = 0
+
+    if delta == 0:
+        h = 0
+    elif r == max_rgb:
+        h = (g - b) / delta
+    elif g == max_rgb:
+        h = 2 + (b - r) / delta
+    else:
+        h = 4 + (r - g) / delta
+
+    h *= 60
+    if h < 0:
+        h += 360
+
+    return h, s, v
+
+def hsv_to_rgb(h, s, v):
+    """
+    Convert HSV (Hue, Saturation, Value/Brightness) to RGB.
+    :param h: Hue value in degrees (0-360).
+    :param s: Saturation value (0-1).
+    :param v: Value/Brightness value (0-1).
+    :return: Tuple of (R, G, B) where each value is in range [0, 255].
+    """
+    h /= 60
+    i = int(h)
+    f = h - i
+    p = v * (1 - s)
+    q = v * (1 - s * f)
+    t = v * (1 - s * (1 - f))
+
+    if i == 0:
+        r, g, b = v, t, p
+    elif i == 1:
+        r, g, b = q, v, p
+    elif i == 2:
+        r, g, b = p, v, t
+    elif i == 3:
+        r, g, b = p, q, v
+    elif i == 4:
+        r, g, b = t, p, v
+    else:
+        r, g, b = v, p, q
+
+    return int(r * 255), int(g * 255), int(b * 255)
 
 
