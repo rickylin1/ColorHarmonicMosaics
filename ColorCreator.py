@@ -85,16 +85,16 @@ def generate_monochrome_scheme(color, num_tints=50, num_shades=50):
         scheme.append(add_shade(color, i / (num_shades + 1)))
     return scheme
 
-# Example usage:
-# original_color = (100, 150, 200)  # Example RGB color
-# # original_color = (255,0,0)
-# monochrome_scheme = generate_monochrome_scheme(original_color)
-# counter = 1
-# for color in monochrome_scheme:
-#     print(color)
-#     folder = 'monochrome'
-#     create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
-#     counter+=1
+# original_color = (50, 80, 90)
+
+def create_monochrome(original_color):  
+    monochrome_scheme = generate_monochrome_scheme(original_color)
+    counter = 1
+    for color in monochrome_scheme:
+        print(color)
+        folder = 'monochrome'
+        create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+        counter+=1
 
 #NOTE this complementary is for the rgb model, which means these are complementary colors 
 # Red and Cyan
@@ -116,19 +116,16 @@ def find_complementary_color(rgb_color):
     complementary_color = (255 - r, 255 - g, 255 - b)
     return complementary_color
 
-# Example usage:
-rgb_color = (255,0,0)  # Example RGB color
-complementary_color = find_complementary_color(rgb_color)
-# print("Original RGB color:", rgb_color)
-# print("Complementary RGB color:", complementary_color)
-complementary_colors_list = generate_monochrome_scheme(rgb_color)
-complementary_colors_list.extend(generate_monochrome_scheme(complementary_color))
-counter = 1
-for color in complementary_colors_list:
-    print(color)
-    folder = 'complementary'
-    create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
-    counter+=1
+def create_complementary(original_color):
+    complementary_color = find_complementary_color(original_color)
+    complementary_colors_list = generate_monochrome_scheme(original_color)
+    complementary_colors_list.extend(generate_monochrome_scheme(complementary_color))
+    counter = 1
+    for color in complementary_colors_list:
+        print(color)
+        folder = 'complementary'
+        create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+        counter+=1
 
 
 
@@ -150,25 +147,18 @@ def find_analogous_colors(rgb_color, num_colors=3, angle=30):
         analogous_colors.append((new_r, new_g, new_b))
     return analogous_colors
 
-sample_color = (255,0,0)
-alist = find_analogous_colors(sample_color)
-analogous_colors = []
-for items in alist:
-    analogous_colors.extend(generate_monochrome_scheme(items, num_shades=10,num_tints=10))
-counter = 1
-for color in analogous_colors:
-    print(color)
-    folder = 'analogous'
-    create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
-    counter+=1
+def create_analogous(original_color):
+    alist = find_analogous_colors(original_color)
+    analogous_colors = []
+    for items in alist:
+        analogous_colors.extend(generate_monochrome_scheme(items, num_shades=10,num_tints=10))
+    counter = 1
+    for color in analogous_colors:
+        print(color)
+        folder = 'analogous'
+        create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+        counter+=1
 
-
-
-# Example usage:
-# rgb_color = (100, 150, 200)  # Example RGB color
-# analogous_colors = find_analogous_colors(rgb_color)
-# print("Original RGB color:", rgb_color)
-# print("Analogous RGB colors:", analogous_colors)
 
 def find_triadic_colors(rgb_color):
     """
@@ -193,22 +183,17 @@ def find_triadic_colors(rgb_color):
 
     return triadic_colors
 
-# RGB to HSV and HSV to RGB functions as defined in the previous function
-
-# Example usage:
-rgb_color = (100, 150, 200)  # Example RGB color
-triadic_colors = find_triadic_colors(rgb_color)
-# print("Original RGB color:", rgb_color)
-# print("Triadic RGB colors:", triadic_colors)
-triadic_list = []
-for items in triadic_colors:
-    triadic_list.extend(generate_monochrome_scheme(items, num_shades=10,num_tints=10))
-counter = 1
-for color in triadic_list:
-    print(color)
-    folder = 'triadic'
-    create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
-    counter+=1
+def create_triadic(original_color):
+    triadic_colors = find_triadic_colors(original_color)
+    triadic_list = []
+    for items in triadic_colors:
+        triadic_list.extend(generate_monochrome_scheme(items, num_shades=10,num_tints=10))
+    counter = 1
+    for color in triadic_list:
+        print(color)
+        folder = 'triadic'
+        create_single_color_image(color, size=(150, 150), filename=f'{folder}/{counter}.png')
+        counter+=1
 
 def is_warm_color(rgb_color):
     """
@@ -233,13 +218,4 @@ def is_cool_color(rgb_color):
     :return: True if the color is cool, False if it is warm.
     """
     return not is_warm_color(rgb_color)
-
-# Example usage:
-rgb_color_warm = (255, 165, 0)  # Example warm RGB color (orange)
-rgb_color_cool = (0, 0, 255)    # Example cool RGB color (blue)
-
-print("RGB color (255, 165, 0) is warm:", is_warm_color(rgb_color_warm))
-print("RGB color (255, 165, 0) is cool:", is_cool_color(rgb_color_warm))
-print("RGB color (0, 0, 255) is warm:", is_warm_color(rgb_color_cool))
-print("RGB color (0, 0, 255) is cool:", is_cool_color(rgb_color_cool))
 

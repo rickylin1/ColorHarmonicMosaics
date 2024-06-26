@@ -7,9 +7,7 @@
 */*
 /*.*
 
-!notebook-images/*
 !*.py
 !*.ipynb
-!mosaic-web.jpg
-!sample.png
 !.gitignore
+!mosaics
